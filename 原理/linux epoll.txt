@@ -1,0 +1,22 @@
+
+参考文档：
+    #epoll基本原理及使用框架
+    https://www.cnblogs.com/panfeng412/articles/2229095.html
+    #linux 内核poll/select/epoll实现剖析（原理经典）
+    https://blog.csdn.net/lishenglong666/article/details/45536611
+
+epoll介绍：
+    epoll是Linux下多路复用IO接口select/poll的增强版本，它能显著减少程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率
+
+epoll优点:
+    1. 支持一个进程打开大数目的socket描述符
+    2. IO效率不随FD数目增加而线性下降
+    3. 内核微调
+
+epoll工作模式:
+    epoll有2种工作方式：LT和ET
+    #LT（level-triggered）
+        LT（level-triggered）是缺省的工作方式，并且同时支持block和no-block socket。在这种做法中，内核告诉你一个文件描述符是否就绪了，然后你可以对这个就绪的fd进行IO操作。如果你不作任何操作，内核还是会继续通知你的。所以，这种模式编程出错误可能性要小一点。传统的select/poll都是这种模型的代表。
+    #ET （edge-triggered）
+        ET （edge-triggered）是高速工作方式，只支持no-block socket。在这种模式下，当描述符从未就绪变为就绪时，内核通过epoll告诉你。然后它会假设你知道文件描述符已经就绪，并且不会再为那个文件描述符发送更多的就绪通知，直到你做了某些操作导致那个文件描述符不再为就绪状态了（比如，你在发送，接收或者接收请求，或者发送接收的数据少于一定量时导致了一个EWOULDBLOCK 错误）。但是请注意，如果一直不对这个fd作IO操作（从而导致它再次变成未就绪），内核不会发送更多的通知（only once），不过在TCP协议中，ET模式的加速效用仍需要更多的benchmark确认。
+
