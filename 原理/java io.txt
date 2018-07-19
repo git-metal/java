@@ -1,7 +1,7 @@
 
 四种IO模型：
-    同步阻塞IO：传统IO模型
-    同步非组件IO：NIO
+    同步阻塞IO：传统IO模型(BIO)
+    同步非阻塞IO：NIO
     异步阻塞IO：
     异步非阻塞IO：AIO
 
@@ -15,9 +15,9 @@ NIO: （New Input/Output） Non Blocking I/O
     非阻塞的核心就是通道和缓冲区，当 IO 事件就绪时，可以通过写道缓冲区，保证 IO 的成功，而无需线程阻塞式地等待。
 
     #NIO的主要组成：
-        缓冲区：
-        通道：
-        选择器：
+        缓冲区：Buffer
+        通道：Channel
+        选择器：Select
 
     #NIO 的工作大致流程为：
         1. 通道注册一个监听到事件处理器
