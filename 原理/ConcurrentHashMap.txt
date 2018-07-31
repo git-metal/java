@@ -1,0 +1,37 @@
+
+参考：
+    #小灰
+    http://www.sohu.com/a/205451532_684445
+    #ConcurrentHashMap源码分析
+    https://www.cnblogs.com/zaizhoumo/p/7709755.html
+
+Segment：Segment包含一个HashEntry数组，数组中的每一个HashEntry既是一个键值对，也是一个链表的头节点
+
+可以说，ConcurrentHashMap是一个二级哈希表。在一个总的哈希表下面，有若干个子哈希表。
+这样的二级结构，和数据库的水平拆分有些相似。
+
+好处：
+    锁分段：每一个Segment好比一个自治区，读写操作高度自治，Segment之间互不影响
+
+
+读写过程：
+    Get方法：
+        1.为输入的Key做Hash运算，得到hash值。
+        2.通过hash值，定位到对应的Segment对象
+        3.再次通过hash值，定位到Segment当中数组的具体位置
+    Put方法：
+        1.为输入的Key做Hash运算，得到hash值。
+        2.通过hash值，定位到对应的Segment对象
+        3.获取可重入锁
+        4.再次通过hash值，定位到Segment当中数组的具体位置。
+        5.插入或覆盖HashEntry对象。
+        6.释放锁。
+
+size：
+    1.遍历所有的Segment。
+    2.把Segment的元素数量累加起来。
+    3.把Segment的修改次数累加起来。
+    4.判断所有Segment的总修改次数是否大于上一次的总修改次数。如果大于，说明统计过程中有修改，重新统计，尝试次数+1；如果不是。说明没有修改，统计结束。
+    5.如果尝试次数超过阈值，则对每一个Segment加锁，再重新统计。
+    6.再次判断所有Segment的总修改次数是否大于上一次的总修改次数。由于已经加锁，次数一定和上次相等。
+    7.释放锁，统计结束。
