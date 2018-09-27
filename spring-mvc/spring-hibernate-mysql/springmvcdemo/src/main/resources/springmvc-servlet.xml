@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <!-- 包扫描路径,实现注解驱动Bean的解析与注入 -->
+    <context:component-scan base-package="com.ljd.springmvc" />
+    <!-- don't handle the static resource -->
+    <mvc:default-servlet-handler />
+    <!-- 使用注解 -->
+    <mvc:annotation-driven />
+
+    <!--加载自定义属性配置文件-->
+    <bean id="propertyConfigurer" class="com.ljd.springmvc.config.DemoPropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:test.properties</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="configurerBean" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:configurer_test.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- configure the InternalResourceViewResolver -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          id="internalResourceViewResolver">
+        <!-- 前缀 -->
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <!-- 后缀 -->
+        <property name="suffix" value=".jsp" />
+    </bean>
+    
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.ljd.springmvc.interceptor.DemoInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://122.112.203.126:3306/test_db"/>
+        <property name="user" value="root"/>
+        <property name="password" value="Huawei@123"/>
+        <property name="maxPoolSize" value="50"/>
+        <property name="minPoolSize" value="10"/>
+        <property name="maxIdleTime" value="25000"/>
+        <property name="acquireIncrement" value="1"/>
+        <property name="acquireRetryAttempts" value="30"/>
+        <property name="acquireRetryDelay" value="1000"/>
+        <property name="testConnectionOnCheckin" value="true"/>
+        <property name="idleConnectionTestPeriod" value="18000"/>
+        <property name="checkoutTimeout" value="5000"/>
+    </bean>
+
+    <bean name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation">
+            <value>classpath:hibernate.cfg.xml</value>
+        </property>
+        <property name="mappingLocations">
+            <list>
+                <value>classpath*:com/ljd/springmvc/entity/*.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean name="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="checkWriteOperations" value="false"/>
+    </bean>
+
+    <bean name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!--开启事务管理-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--AOP-->
+    <bean id="helloworld1" class="com.ljd.springmvc.aoptest.HelloWorldImpl1"></bean>
+    <bean id="helloworld2" class="com.ljd.springmvc.aoptest.HelloWorldImpl2"></bean>
+    <bean id="timehandler" class="com.ljd.springmvc.aoptest.TimeHandler"/>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <aop:config>
+        <aop:aspect id="time" ref="timehandler">
+            <aop:pointcut id="addtime" expression="execution (* com.ljd.springmvc.aoptest.HelloWorldImpl*.*(..))"/>
+            <aop:before method="printTime" pointcut-ref="addtime"/>
+            <aop:after method="printTime" pointcut-ref="addtime"/>
+        </aop:aspect>
+
+    </aop:config>
+
+</beans>
