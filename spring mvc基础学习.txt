@@ -1,0 +1,78 @@
+
+
+Tomcat加载过程:
+    1. 启动WEB项目的时候,容器(如:Tomcat)会去读它的配置文件web.xml.读两个节点:   
+        <listener></listener> 和 <context-param></context-param>
+    2. 紧接着,容器创建一个ServletContext(上下文),这个WEB项目所有部分都将共享这个上下文.
+    3. 容器将<context-param></context-param>转化为键值对,并交给ServletContext.
+    4. 容器创建<listener></listener>中的类实例,即创建监听.
+        在监听中会有contextInitialized(ServletContextEvent args)初始化方法,在这个方法中获得：
+        ServletContext = ServletContextEvent.getServletContext();   
+        context-param的值 = ServletContext.getInitParameter("context-param的键"); 
+        得到这个context-param的值之后,你就可以做一些操作了.注意,这个时候你的WEB项目还没有完全启动完成.这个动作会比所有的Servlet都要早.
+        换句话说,这个时候,你对<context-param>中的键值做的操作,将在你的WEB项目完全启动之前被执行.
+    5. 加载Filter，按照web.xml中的Filter顺序来加载。
+    6. 加载Servlet。load on startup中的启动顺序是按照配置参数从小到大加载实例化的（小于0的忽略）
+    7. 加载Spring
+
+web.xml 节点加载顺序:
+    ServletContext -> listener -> filter -> servlet
+    ServletContext -> listener -> filter -> servlet -> Spring
+
+    Listener:
+        (I)ServletContextListener
+            它能够监听 ServletContext 对象的生命周期，实际上就是监听 Web应用的生命周。
+            当Servlet 容器启动或终止Web 应用时，会触发ServletContextEvent 事件，该事件由ServletContextListener 来处理。在 ServletContextListener 接口中定义了处理ServletContextEvent 事件的两个方法。
+            共享数据：
+                ctx.setAttribute("dept", depts);
+                ctx.getAttribute("dept", depts);
+
+    Servlet:
+        (C)HttpServlet
+
+    Filter中使用Bean:
+        方法1：将spring的加载改成Listener的方式
+            <listener>  
+                <listener-class>  
+                    org.springframework.web.context.ContextLoaderListener   
+                </listener-class>  
+            </listener>
+
+Spring加载过程:
+    ContextLoaderListener:
+        ContextLoaderListener是一个实现了ServletContextListener接口的监听器，在启动项目时会触发contextInitialized方法（该方法主要完成ApplicationContext对象的创建）。
+        运行过程：
+            -> contextInitialized()
+                -> ContextLoader.initWebApplicationContext()
+                    -> createWebApplicationContext()            #创建WebApplicationContext
+                    -> configureAndRefreshWebApplicationContext #封装ApplicationContext数据并且初始化所有相关Bean对象
+                        -> refresh()    #AbstractApplicationContext.refresh()
+                    -> servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context); #将ApplicationContex保存到ServletContext。
+    DispatcherServlet：
+        继承了HttpServlet
+        运行过程：
+            -> HttpServletBean.init()
+            -> FrameworkServlet.initServletBean()
+                -> initWebApplicationContext()
+                    -> createWebApplicationContext()
+                        -> configureAndRefreshWebApplicationContext()
+
+Spring的ApplicationListener和ContextRefreshedEvent：
+    Spring初始化完成，通过实现ApplicationListener接口可以做一些系统初始化操作
+
+Spring Bean初始化的两种方式:
+    方法1.InitializingBean接口为bean提供了初始化方法的方式，它只包括afterPropertiesSet方法，凡是继承该接口的类，在初始化bean的时候会执行该方法。
+    方法2.在配置文件中配置init-method
+        <bean id="testInitializingBean" class="com.TestInitializingBean" init-method="testInit"></bean>
+    源码位置: AbstractAutowireCapableBeanFactory.invokeInitMethods()
+    1：spring为bean提供了两种初始化bean的方式，实现InitializingBean接口，实现afterPropertiesSet方法，或者在配置文件中同过init-method指定，两种方式可以同时使用
+    2：实现InitializingBean接口是直接调用afterPropertiesSet方法，比通过反射调用init-method指定的方法效率相对来说要高点。但是init-method方式消除了对spring的依赖
+    3：如果调用afterPropertiesSet方法时出错，则不调用init-method指定的方法。
+
+Spring ApplicationContext接口: 对当前bean传入对应的Spring上下文。
+Spring OncePerRequestFilter类: 确保一次请求只经过一次filter。
+
+
+Spring AOP:
+    
+    
