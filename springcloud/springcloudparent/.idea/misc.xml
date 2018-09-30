@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/eureka-client/pom.xml" />
+        <option value="$PROJECT_DIR$/service-ribbon/pom.xml" />
+        <option value="$PROJECT_DIR$/service-feign/pom.xml" />
+        <option value="$PROJECT_DIR$/service-zuul/pom.xml" />
+        <option value="$PROJECT_DIR$/config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/config-client/pom.xml" />
+        <option value="$PROJECT_DIR$/../springcloudparent/service-hi/pom.xml" />
+        <option value="$PROJECT_DIR$/../springcloudparent/service-miya/pom.xml" />
+        <option value="$PROJECT_DIR$/../springcloudparent/service-zipkin/pom.xml" />
+        <option value="$PROJECT_DIR$/../springcloudparent/eureka-server-1/pom.xml" />
+        <option value="$PROJECT_DIR$/../springcloudparent/eureka-server-2/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/service-hi/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_10" project-jdk-name="JDK10" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/../springcloudparent/out" />
+  </component>
+</project>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/../springcloudparent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/config-client" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/config-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/eureka-client" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/eureka-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/eureka-server-1" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/eureka-server-2" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/service-feign" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/service-hi" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/service-miya" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/service-ribbon" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/service-zipkin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../springcloudparent/service-zuul" charset="UTF-8" />
+  </component>
+</project>
