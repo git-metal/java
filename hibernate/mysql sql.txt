@@ -12,3 +12,11 @@ CREATE TABLE `tb_employee_jpa` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
 
+
+#
+create table tb_country(
+    id 
+    name varchar(255),
+    description varchar(255),
+    primary key (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
