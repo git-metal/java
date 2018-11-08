@@ -15,7 +15,7 @@ CREATE TABLE `tb_employee_jpa` (
 
 #
 create table tb_country(
-    id 
+    id varchar(255),
     name varchar(255),
     description varchar(255),
     primary key (id)
